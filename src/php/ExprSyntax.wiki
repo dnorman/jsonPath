@@ -13,4 +13,4 @@
 || n/a || \[start:end:step\] ||array slice operator borrowed from ES4. ||
 || \[\] || ?() ||applies a filter (script) expression. ||
 || n/a || () ||script expression, using the underlying script engine. ||
-|| () || n/a ||grouping in Xpath ||
+|| () || n/a ||grouping in Xpath || 
