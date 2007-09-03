@@ -7,7 +7,6 @@
 
 // API function 
 function jsonPath($obj, $expr, $args=null) {
-//   printf("jsonPath(%d, %s, %s)<br>",$obj,$expr,$args);
    $jsonpath = new JsonPath();
    $jsonpath->resultType = ($args ? $args['resultType'] : "VALUE");
    $x = $jsonpath->normalize($expr);
@@ -88,7 +87,7 @@ class JsonPath {
          call_user_func($f, $m, $loc, $expr, $val, $path);
    }
    function slice($loc, $expr, $v, $path) {
-      $s = explode(":", preg_replace("/^(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)$/", "$1:$2:$3", $name));
+      $s = explode(":", preg_replace("/^(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)$/", "$1:$2:$3", $loc));
       $len=count($v);
       $start=(int)$s[0]?$s[0]:0; 
       $end=(int)$s[1]?$s[1]:$len; 
