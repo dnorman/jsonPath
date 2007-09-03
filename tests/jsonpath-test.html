@@ -1,0 +1,39 @@
+<html>
+<head>
+<title> JSONPath - Test</title>
+<script type="text/javascript" src="json.js"></script>
+<script type="text/javascript" src="jsonpath.js"></script>
+<script type="text/javascript" src="tests.json"></script>
+</head>
+
+<body>
+<script type="text/javascript">
+function show(s) { document.getElementById("out").innerHTML += (s+"\n").replace(/&/g, "&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g, "<br/>") + "<hr/>"; }
+
+function evaluate(p, v) {
+   p = p.replace(/^\$\['?|'?\]$/g,"").split(/'?\]\['?/);
+   for (var i=0; i<p.length; i++)
+      v = v[p[i]];
+   return v && v.toJSONString();
+}
+
+window.onload = function() {
+   var pathes, out="", pre;
+   for (var i=0; i<tests.length; i++) {
+      out = "";
+      for (var j=0; j<tests[i].p.length; j++) {
+         pre = ">";
+         if (pathes = jsonPath(tests[i].o, tests[i].p[j], {resultType: "PATH"}))
+            for (var k=0; k<pathes.length; k++) {
+               out += pre + " " + pathes[k] + " = " + evaluate(pathes[k],tests[i].o) + "\n";
+               pre = " ";
+            }
+         
+      }
+      show(out);
+   }
+};
+</script>
+<pre id="out"></pre>
+</body>
+</html>
