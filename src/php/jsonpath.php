@@ -1,5 +1,5 @@
 <?php
-/* JSONPath 0.8.1 - XPath for JSON
+/* JSONPath 0.8.2 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
@@ -52,7 +52,7 @@ class JsonPath {
       return !!$p;
    }
    function trace($expr, $val, $path) {
-      if ($expr) {
+      if ($expr !== "") {
          $x = explode(";", $expr);
          $loc = array_shift($x);
          $x = implode(";", $x);
@@ -65,15 +65,15 @@ class JsonPath {
             $this->trace($x, $val, $path);
             $this->walk($loc, $x, $val, $path, array(&$this, "_callback_04"));
          }
-         else if (preg_match("/,/", $loc)) // [name1,name2,...]
-            for ($s=preg_split("/'?,'?/", $loc),$i=0,$n=count($s); $i<$n; $i++)
-                $this->trace($s[$i].";".$x, $val, $path);
          else if (preg_match("/^\(.*?\)$/", $loc)) // [(expr)]
             $this->trace($this->evalx($loc, $val, substr($path,strrpos($path,";")+1)).";".$x, $val, $path);
          else if (preg_match("/^\?\(.*?\)$/", $loc)) // [?(expr)]
             $this->walk($loc, $x, $val, $path, array(&$this, "_callback_05"));
          else if (preg_match("/^(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)$/", $loc)) // [start:end:step]  phyton slice syntax
             $this->slice($loc, $x, $val, $path);
+         else if (preg_match("/,/", $loc)) // [name1,name2,...]
+            for ($s=preg_split("/'?,'?/", $loc),$i=0,$n=count($s); $i<$n; $i++)
+                $this->trace($s[$i].";".$x, $val, $path);
       }
       else
          $this->store($path, $val);
