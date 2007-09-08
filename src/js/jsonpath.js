@@ -1,4 +1,4 @@
-/* JSONPath 0.8.0 - XPath for JSON
+/* JSONPath 0.8.1 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
@@ -26,7 +26,7 @@ function jsonPath(obj, expr, arg) {
          return !!p;
       },
       trace: function(expr, val, path) {
-         if (expr) {
+         if (expr !== "") {
             var x = expr.split(";"), loc = x.shift();
             x = x.join(";");
             if (val && val.hasOwnProperty(loc))
@@ -37,16 +37,16 @@ function jsonPath(obj, expr, arg) {
                P.trace(x, val, path);
                P.walk(loc, x, val, path, function(m,l,x,v,p) { typeof v[m] === "object" && P.trace("..;"+x,v[m],p+";"+m); });
             }
-            else if (/,/.test(loc)) { // [name1,name2,...]
-               for (var s=loc.split(/'?,'?/),i=0,n=s.length; i<n; i++)
-                  P.trace(s[i]+";"+x, val, path);
-            }
             else if (/^\(.*?\)$/.test(loc)) // [(expr)]
                P.trace(P.eval(loc, val, path.substr(path.lastIndexOf(";")+1))+";"+x, val, path);
             else if (/^\?\(.*?\)$/.test(loc)) // [?(expr)]
                P.walk(loc, x, val, path, function(m,l,x,v,p) { if (P.eval(l.replace(/^\?\((.*?)\)$/,"$1"),v[m],m)) P.trace(m+";"+x,v,p); });
             else if (/^(-?[0-9]*):(-?[0-9]*):?([0-9]*)$/.test(loc)) // [start:end:step]  phyton slice syntax
                P.slice(loc, x, val, path);
+            else if (/,/.test(loc)) { // [name1,name2,...]
+               for (var s=loc.split(/'?,'?/),i=0,n=s.length; i<n; i++)
+                  P.trace(s[i]+";"+x, val, path);
+            }
          }
          else
             P.store(path, val);
