@@ -1,6 +1,6 @@
 <html>
 <head>
-<title> JSONPath - Example (php)</title>
+<title> JSONPath - Tests (php)</title>
 </head>
 <body>
 <pre>
