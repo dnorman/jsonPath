@@ -1,5 +1,5 @@
 <?php
-/* JSONPath 0.8.2 - XPath for JSON
+/* JSONPath 0.8.3 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
@@ -29,7 +29,7 @@ class JsonPath {
 
    // normalize path expression
    function normalize($x) {
-      $x = preg_replace_callback("/[\['](\??\(.*?\))[\]']/", array(&$this, "_callback_01"), $x);
+      $x = preg_replace_callback(array("/[\['](\??\(.*?\))[\]']/", "/\['(.*?)'\]/"), array(&$this, "_callback_01"), $x);
       $x = preg_replace(array("/'?\.'?|\['?/", "/;;;|;;/", "/;$|'?\]|'$/"),
                         array(";", ";..;", ""),
                         $x);
