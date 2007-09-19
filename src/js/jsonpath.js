@@ -1,4 +1,4 @@
-/* JSONPath 0.8.2 - XPath for JSON
+/* JSONPath 0.8.3 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
@@ -9,7 +9,7 @@ function jsonPath(obj, expr, arg) {
       result: [],
       normalize: function(expr) {
          var subx = [];
-         return expr.replace(/\['?(.*?)'?\]|'(.*?)'/g, function($0,$1){return "[#"+(subx.push($1)-1)+"]";})  /* http://code.google.com/p/jsonpath/issues/detail?id=4 */
+         return expr.replace(/[\['](\??\(.*?\))[\]']|\['(.*?)'\]/g, function($0,$1,$2){return "[#"+(subx.push($1||$2)-1)+"]";})  /* http://code.google.com/p/jsonpath/issues/detail?id=4 */
                     .replace(/'?\.'?|\['?/g, ";")
                     .replace(/;;;|;;/g, ";..;")
                     .replace(/;$|'?\]|'$/g, "")
