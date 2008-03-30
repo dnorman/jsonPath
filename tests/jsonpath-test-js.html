@@ -116,6 +116,15 @@ var out = "", tests =
          },
     "p": [ "$..a"
          ]
+  },
+  { "o": { a: [ { a:5, '@':2, '$':3 },   // issue 7: resolved by escaping the '@' character 
+                { a:6, '@':3, '$':4 },   // in a JSONPath expression.
+                { a:7, '@':4, '$':5 } 
+              ]
+         },
+    "p": [ "$.a[?(@['\\@']==3)]",
+           "$.a[?(@['$']==5)]"
+         ]
   }
 ];
 
