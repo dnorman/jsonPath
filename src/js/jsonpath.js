@@ -1,7 +1,10 @@
-/* JSONPath 0.8.4 - XPath for JSON
+/* JSONPath 0.8.5 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
+ *
+ * Proposal of Chris Zyp goes into version 0.9.x
+ * Issue 7 resolved
  */
 function jsonPath(obj, expr, arg) {
    var P = {
@@ -74,8 +77,8 @@ function jsonPath(obj, expr, arg) {
          }
       },
       eval: function(x, _v, _vname) {
-         try { return $ && _v && eval(x.replace(/@/g, "_v")); }
-         catch(e) { throw new SyntaxError("jsonPath: " + e.message + ": " + x.replace(/@/g, "_v").replace(/\^/g, "_a")); }
+         try { return $ && _v && eval(x.replace(/(^|[^\\])@/g, "$1_v").replace(/\\@/g, "@")); }  // issue 7 : resolved ..
+         catch(e) { throw new SyntaxError("jsonPath: " + e.message + ": " + x.replace(/(^|[^\\])@/g, "$1_v").replace(/\\@/g, "@")); }  // issue 7 : resolved ..
       }
    };
 
