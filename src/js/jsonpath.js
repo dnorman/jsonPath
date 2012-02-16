@@ -8,7 +8,8 @@
  */
 function jsonPath(obj, expr, arg) {
    var P = {
-      resultType: arg && arg.resultType || "VALUE",
+      rt: arg && arg.resultType || "VALUE",
+      vivify: arg && arg.autoVivify || false, // experimental
       result: [],
       normalize: function(expr) {
          var subx = [];
@@ -24,8 +25,14 @@ function jsonPath(obj, expr, arg) {
             p += /^[0-9*]+$/.test(x[i]) ? ("["+x[i]+"]") : ("['"+x[i]+"']");
          return p;
       },
+      asList: function(path){
+         return path.split(";").slice(1);
+      },
       store: function(p, v) {
-         if (p) P.result[P.result.length] = P.resultType == "PATH" ? P.asPath(p) : v;
+         if (p) P.result[P.result.length] =
+            P.rt == "PATH" ? P.asPath(p) : (
+               P.rt == "LIST" ? P.asList(p) : v
+            );
          return !!p;
       },
       trace: function(expr, val, path) {
@@ -49,6 +56,13 @@ function jsonPath(obj, expr, arg) {
             else if (/,/.test(loc)) { // [name1,name2,...]
                for (var s=loc.split(/'?,'?/),i=0,n=s.length; i<n; i++)
                   P.trace(s[i]+";"+x, val, path);
+            }
+            else if( P.vivify && loc.length ){
+               // the idea of autoVivify is pretty evil, and probably horribly broken in many ways. not sure how else to locate and set a non-existent node though.
+               if( typeof val == 'object' && typeof val[loc] == 'undefined' ){
+                  if (x.length) val[loc] = {};
+                  P.trace(x, val[loc], path + ";" + loc);
+               }
             }
          }
          else
@@ -83,8 +97,8 @@ function jsonPath(obj, expr, arg) {
    };
 
    var $ = obj;
-   if (expr && obj && (P.resultType == "VALUE" || P.resultType == "PATH")) {
+   if (expr && obj && ( P.rt == "VALUE" || P.rt == "PATH" || P.rt == "LIST") ) {
       P.trace(P.normalize(expr).replace(/^\$;?/,""), obj, "$");  // issue 6 resolved
       return P.result.length ? P.result : false;
    }
-} 
+}
